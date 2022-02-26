@@ -1,0 +1,332 @@
+MPASM  5.50                          MAIN.ASM   1-5-2022  17:23:08         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;Alaa Zuhd - 1180865
+                      00002 ;Rawan Yassin - 1182224
+Warning[205]: Found directive in column 1. (PROCESSOR)
+                      00003 PROCESSOR 16F877        ; Define MCU type
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3731           00004 __CONFIG 0x3731         ; Set config fuses
+                      00005 
+Warning[205]: Found directive in column 1. (org)
+0000                  00006 org 0x00 ;This is where we come on power up and reset
+                      00007 ;*******************SETUP CONSTANTS*******************
+  0000000B            00008 INTCON      EQU 0x0B ;Interrupt Control Register
+  00000006            00009 PORTB       EQU 0x06 ;Port B register address
+  00000008            00010 PORTD       EQU 0x08 ;Port D register address
+  00000086            00011 TRISB       EQU 0x86 ;TrisB register address
+  00000088            00012 TRISD       EQU 0x88 ;TrisD register address
+  00000003            00013 STATUS      EQU 0X03 ;Status register address
+  00000020            00014 C1          EQU 0x20 ;Used for Delay function
+  00000021            00015 C2          EQU 0x21 ;Used for Delay function
+  00000022            00016 C3          EQU 0x22 ;Used for Delay function
+  00000023            00017 COUNT       EQU 0x23 ;This will be our counting variable
+  00000024            00018 TEMP        EQU 0x24 ;Temporary store for w register
+  00000025            00019 IncrementBy EQU 0x25 ;The amount of increment, will be edited using ISR of Push button_1 
+  00000026            00020 DelayBy     EQU 0x26 ;The amount of outer variable for the delay function, whenever it is incremented, d
+                            elays get incremented as well
+  00000027            00021 Flag        EQU 0x27 ;Dummy variable
+                      00022 
+Warning[203]: Found opcode in column 1. (GOTO)
+0000   2835           00023 GOTO main ;Jump over the interrupt address
+                      00024 
+                      00025 ;***************INTERRUPT ROUTINE***************
+Warning[205]: Found directive in column 1. (ORG)
+0004                  00026 ORG 0x04 ;This is where PC points on an interrupt
+Warning[203]: Found opcode in column 1. (NOP)
+0004   0000           00027 NOP
+Warning[203]: Found opcode in column 1. (MOVWF)
+0005   00A4           00028 MOVWF TEMP ;Store the value of w temporarily
+                      00029 
+                      00030 ;If bit 0 of INTCON (RBIF) is set, this means that RB4 is set, and delay interrupt is activated. 
+Warning[203]: Found opcode in column 1. (BTFSC)
+0006   180B           00031 BTFSC INTCON, 0
+Warning[203]: Found opcode in column 1. (GOTO)
+0007   2814           00032 GOTO INCREMENT_DELAY
+                      00033 ;If RBIF is not set, then RB0 may be the one activating the interrupt, and asking for an increment in th
+                            e amount of increment
+Warning[203]: Found opcode in column 1. (BTFSS)
+0008   1C06           00034 BTFSS PORTB, 0
+Warning[203]: Found opcode in column 1. (GOTO)
+0009   281F           00035 GOTO DONE
+                      00036 ;Increment_incrementby, aims to add the 'INCREMENTBY' variable by one, until it reaches 6, then it is se
+                            t back to 1
+000A                  00037 INCREMENT_INCREMENTBY
+Warning[203]: Found opcode in column 1. (MOVLW)
+000A   3001           00038 MOVLW 0x01
+MPASM  5.50                          MAIN.ASM   1-5-2022  17:23:08         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (ADDWF)
+000B   07A5           00039 ADDWF IncrementBy, F
+Warning[203]: Found opcode in column 1. (BTFSC)
+000C   1925           00040 BTFSC IncrementBy, 2
+Warning[203]: Found opcode in column 1. (GOTO)
+000D   280F           00041 GOTO CHECK_SECOND_BIT
+Warning[203]: Found opcode in column 1. (GOTO)
+000E   281F           00042 GOTO DONE
+000F                  00043 CHECK_SECOND_BIT
+Warning[203]: Found opcode in column 1. (BTFSS)
+000F   1CA5           00044 BTFSS IncrementBy, 1
+Warning[203]: Found opcode in column 1. (GOTO)
+0010   281F           00045 GOTO DONE
+Warning[203]: Found opcode in column 1. (MOVLW)
+0011   3001           00046 MOVLW D'1'
+Warning[203]: Found opcode in column 1. (MOVWF)
+0012   00A5           00047 MOVWF IncrementBy
+                      00048 
+Warning[203]: Found opcode in column 1. (GOTO)
+0013   281F           00049 GOTO DONE
+                      00050 
+                      00051 ;Increment_delay, aims to add 4 to the 'DelayBy' variable, as this variable is used as the variable for 
+                            the outer loop in 
+                      00052 ;the delay function, and whenever it is incremented by 4, a new second would be added as a result in the
+                             delay function.
+                      00053 ;it would keep incrementing 'DelayBy' until it reaches 24 
+0014                  00054 INCREMENT_DELAY
+                      00055 ;Just a simple check to make sure that RB4 is set, the port reading from the push button
+Warning[203]: Found opcode in column 1. (BTFSC)
+0014   1A06           00056 BTFSC PORTB, 4
+Warning[203]: Found opcode in column 1. (GOTO)
+0015   281F           00057 GOTO DONE
+Warning[203]: Found opcode in column 1. (MOVLW)
+0016   3004           00058 MOVLW 0x04
+Warning[203]: Found opcode in column 1. (ADDWF)
+0017   07A6           00059 ADDWF DelayBy, F
+Warning[203]: Found opcode in column 1. (BTFSC)
+0018   1A26           00060 BTFSC DelayBy, 4
+Warning[203]: Found opcode in column 1. (GOTO)
+0019   281B           00061 GOTO CHECK_FOURTH_BIT
+Warning[203]: Found opcode in column 1. (GOTO)
+001A   281F           00062 GOTO DONE
+001B                  00063 CHECK_FOURTH_BIT
+Warning[203]: Found opcode in column 1. (BTFSS)
+001B   1DA6           00064 BTFSS DelayBy, 3
+Warning[203]: Found opcode in column 1. (GOTO)
+001C   281F           00065 GOTO DONE
+Warning[203]: Found opcode in column 1. (MOVLW)
+001D   3004           00066 MOVLW D'4'
+Warning[203]: Found opcode in column 1. (MOVWF)
+001E   00A6           00067 MOVWF DelayBy
+                      00068 
+001F                  00069 DONE
+MPASM  5.50                          MAIN.ASM   1-5-2022  17:23:08         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00070 
+                      00071 
+Warning[204]: Found pseudo-op in column 1. (MOVFW)
+001F   0824           00072 MOVFW TEMP ;Restore w to the value before the interrupt
+Warning[203]: Found opcode in column 1. (BCF)
+0020   100B           00073 BCF INTCON,0 ;RBIF - Clear FLag Bit Just In Case
+Warning[203]: Found opcode in column 1. (BCF)
+0021   108B           00074 BCF INTCON,1 ;INTF - Clear FLag Bit Just In Case
+                      00075 
+Warning[203]: Found opcode in column 1. (RETFIE)
+0022   0009           00076 RETFIE ;Come out of the interrupt routine
+                      00077 
+0023   0823           00078 SHOW    MOVF COUNT, w     ; move the current count to W
+0024   0088           00079                 MOVWF   PORTD      ; update PORTC to reflect the current count
+0025   0008           00080                 RETURN
+                      00081 
+0026                  00082 DELAY   ; 1SEC = 4, 2SEC = 8, 3SEC = 12, 4SEC = 16, 5SEC = 20.
+0026   0826           00083                 MOVF DelayBy, W 
+0027   00A2           00084                 MOVWF C3
+Warning[207]: Found label after column 1. (LOOP3)
+0028                  00085                 LOOP3
+0028   30C8           00086                 MOVLW D'200'
+0029   00A1           00087                 MOVWF C2
+Warning[207]: Found label after column 1. (LOOP2)
+002A                  00088                 LOOP2
+002A   30E6           00089                 MOVLW D'230'
+002B   00A0           00090                 MOVWF C1
+Warning[207]: Found label after column 1. (LOOP)
+002C                  00091                 LOOP
+002C   0000           00092                 NOP
+002D   0000           00093                 NOP 
+002E   0BA0           00094                 DECFSZ C1, F
+002F   282C           00095                 GOTO LOOP
+0030   0BA1           00096                 DECFSZ C2, F
+0031   282A           00097                 GOTO LOOP2
+0032   0BA2           00098                 DECFSZ C3, F
+0033   2828           00099                 GOTO LOOP3
+0034   0008           00100                 RETURN
+                      00101 
+                      00102 ;*******************Main Program*********************
+0035                  00103 main
+                      00104 
+                      00105 ;*******************Set Up The Ports******************
+Warning[203]: Found opcode in column 1. (BSF)
+0035   1683           00106 BSF STATUS,5 ;Switch to Bank 1
+Warning[203]: Found opcode in column 1. (MOVLW)
+0036   3011           00107 MOVLW 0x11
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0037   0086           00108 MOVWF TRISB ;Set RB0 as input
+Warning[203]: Found opcode in column 1. (MOVLW)
+0038   3000           00109 MOVLW 0x00
+Warning[203]: Found opcode in column 1. (MOVWF)
+MPASM  5.50                          MAIN.ASM   1-5-2022  17:23:08         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0039   0088           00110 MOVWF TRISD ;Set PortD as output
+Warning[203]: Found opcode in column 1. (BCF)
+003A   1283           00111 BCF STATUS,5 ;Come back to Bank 0
+                      00112 
+Warning[203]: Found opcode in column 1. (MOVLW)
+003B   3011           00113 MOVLW 0x11
+Warning[203]: Found opcode in column 1. (MOVWF)
+003C   0086           00114 MOVWF PORTB
+                      00115 
+                      00116 
+                      00117 ;*******************Set Up The Interrupt Registers****
+Warning[203]: Found opcode in column 1. (BSF)
+003D   178B           00118 BSF INTCON,7 ;GIE – Global interrupt enable (1=enable)
+Warning[203]: Found opcode in column 1. (BSF)
+003E   170B           00119 BSF INTCON,6 ;
+Warning[203]: Found opcode in column 1. (BSF)
+003F   160B           00120 BSF INTCON,4 ;INTE - RB0 Interrupt Enable (1=enable)
+Warning[203]: Found opcode in column 1. (BCF)
+0040   108B           00121 BCF INTCON,1 ;INTF - Clear FLag Bit Just In Case
+Warning[203]: Found opcode in column 1. (BCF)
+0041   100B           00122 BCF INTCON,0 ;RBIF - Clear FLag Bit for Port B Just In Case
+Warning[203]: Found opcode in column 1. (BSF)
+0042   158B           00123 BSF INTCON,3;INTE - RB Port Change Interrupt Enable (1=enable)
+                      00124 
+                      00125 ; clear PORTD
+Warning[203]: Found opcode in column 1. (MOVLW)
+0043   3000           00126 MOVLW 0x00
+Warning[203]: Found opcode in column 1. (MOVWF)
+0044   0088           00127 MOVWF PORTD
+                      00128 
+                      00129 ; initilization 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0045   3000           00130 MOVLW 0x00
+Warning[203]: Found opcode in column 1. (MOVWF)
+0046   00A3           00131 MOVWF COUNT
+Warning[203]: Found opcode in column 1. (MOVLW)
+0047   3001           00132 MOVLW 0x01
+Warning[203]: Found opcode in column 1. (MOVWF)
+0048   00A5           00133 MOVWF IncrementBy
+Warning[203]: Found opcode in column 1. (MOVLW)
+0049   3004           00134 MOVLW D'4'
+Warning[203]: Found opcode in column 1. (MOVWF)
+004A   00A6           00135 MOVWF DelayBy
+Warning[203]: Found opcode in column 1. (MOVLW)
+004B   3000           00136 MOVLW D'0'
+Warning[203]: Found opcode in column 1. (MOVWF)
+004C   00A7           00137 MOVWF Flag
+                      00138 
+Warning[203]: Found opcode in column 1. (NOP)
+004D   0000           00139 NOP
+                      00140 
+                      00141 ; DISPLAHY THE FIRST COUNT (ZERO)
+MPASM  5.50                          MAIN.ASM   1-5-2022  17:23:08         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (CALL)
+004E   2023           00142 CALL SHOW ; TO SHOW 0
+Warning[203]: Found opcode in column 1. (CALL)
+004F   2026           00143 CALL DELAY
+                      00144 
+                      00145 ;Counting loop, will go through the numbers from 0 to 31, unless there is an interrupt
+0050                  00146 COUNTING
+Warning[203]: Found opcode in column 1. (MOVF)
+0050   0825           00147 MOVF IncrementBy, W    ; move the current increment by to W
+Warning[203]: Found opcode in column 1. (ADDWF)
+0051   0723           00148 ADDWF COUNT, W             ; add the IncrementBy value to count
+Warning[203]: Found opcode in column 1. (MOVWF)
+0052   00A3           00149 MOVWF COUNT 
+Warning[203]: Found opcode in column 1. (BTFSC)
+0053   1AA3           00150 BTFSC COUNT, 5             ;if 32 is reached we go back to zero
+Warning[203]: Found opcode in column 1. (GOTO)
+0054   2856           00151 GOTO RESET_COUNT
+Warning[203]: Found opcode in column 1. (GOTO)
+0055   2858           00152 GOTO CALL_SHOW
+0056                  00153 RESET_COUNT
+Warning[203]: Found opcode in column 1. (MOVLW)
+0056   3020           00154 MOVLW 0x20
+Warning[203]: Found opcode in column 1. (SUBWF)
+0057   02A3           00155 SUBWF COUNT, F
+0058                  00156 CALL_SHOW
+Warning[203]: Found opcode in column 1. (CALL)
+0058   2023           00157 CALL SHOW
+                      00158 ;Delay is called after each SHOW call is performed
+Warning[203]: Found opcode in column 1. (CALL)
+0059   2026           00159 CALL DELAY
+Warning[203]: Found opcode in column 1. (GOTO)
+005A   2850           00160 GOTO COUNTING ;Keep on doing this
+                      00161 
+Warning[205]: Found directive in column 1. (END)
+                      00162 END ;End Of Program
+MPASM  5.50                          MAIN.ASM   1-5-2022  17:23:08         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+C1                                00000020
+C2                                00000021
+C3                                00000022
+CALL_SHOW                         00000058
+CHECK_FOURTH_BIT                  0000001B
+CHECK_SECOND_BIT                  0000000F
+COUNT                             00000023
+COUNTING                          00000050
+DELAY                             00000026
+DONE                              0000001F
+DelayBy                           00000026
+Flag                              00000027
+INCREMENT_DELAY                   00000014
+INCREMENT_INCREMENTBY             0000000A
+INTCON                            0000000B
+IncrementBy                       00000025
+LOOP                              0000002C
+LOOP2                             0000002A
+LOOP3                             00000028
+PORTB                             00000006
+PORTD                             00000008
+RESET_COUNT                       00000056
+SHOW                              00000023
+STATUS                            00000003
+TEMP                              00000024
+TRISB                             00000086
+TRISD                             00000088
+__16F877A                         00000001
+__DEBUG                           1
+main                              00000035
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXX----- ---------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    88
+Program Memory Words Free:  8104
+
+
+Errors   :     0
+Warnings :    78 reported,     0 suppressed
+Messages :     2 reported,     0 suppressed
+
+

@@ -1,0 +1,61 @@
+MPLINK 4.48, Linker
+Linker Map File - Created Wed Jan 05 17:23:09 2022
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000002
+                   .org_1       code   0x000004    program   0x0000ae
+      .config_2007_MAIN.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000000      
+                            0x000004    0x00005a      
+                            0x002007    0x002007      
+            89 out of 8454 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                CALL_SHOW   0x000058    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+         CHECK_FOURTH_BIT   0x00001b    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+         CHECK_SECOND_BIT   0x00000f    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                 COUNTING   0x000050    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                    DELAY   0x000026    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     DONE   0x00001f    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+          INCREMENT_DELAY   0x000014    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+    INCREMENT_INCREMENTBY   0x00000a    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     LOOP   0x00002c    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                    LOOP2   0x00002a    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                    LOOP3   0x000028    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+              RESET_COUNT   0x000056    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     SHOW   0x000023    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     main   0x000035    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+    INCREMENT_INCREMENTBY   0x00000a    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+         CHECK_SECOND_BIT   0x00000f    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+          INCREMENT_DELAY   0x000014    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+         CHECK_FOURTH_BIT   0x00001b    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     DONE   0x00001f    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     SHOW   0x000023    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                    DELAY   0x000026    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                    LOOP3   0x000028    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                    LOOP2   0x00002a    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     LOOP   0x00002c    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                     main   0x000035    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                 COUNTING   0x000050    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+              RESET_COUNT   0x000056    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+                CALL_SHOW   0x000058    program     static E:\University\RealTime\pic_examples\Project4\main.asm
+
+
